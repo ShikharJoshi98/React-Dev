@@ -21,6 +21,27 @@ export const createProjectFailure = (error) => {
     }
 }
 
+export const getProjectTreeRequest = (projectId) => {
+    return {
+        type: projectAction.GET_PROJECT_TREE_REQUEST,
+        payload: projectId
+    }
+}
+
+export const getProjectTreeSuccess = (data) => {
+    return {
+        type: projectAction.GET_PROJECT_TREE_SUCCESS,
+        payload: data
+    }
+}
+
+export const getProjectTreeFailure = (error) => {
+    return {
+        type: projectAction.GET_PROJECT_TREE_FAILURE,
+        payload: error
+    }
+}
+
 export const clearProjectState = () => {
     return {
         type: projectAction.CLEAR_PROJECT_STATE

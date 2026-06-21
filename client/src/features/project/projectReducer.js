@@ -1,6 +1,12 @@
 import { projectAction } from "./projectActionType"
 
 const initialState = {
+    projectTree: {
+        loading: false,
+        error: null,
+        message: null,
+        projectTree: null
+    },
     createProject: {
         loading: false,
         error: null,
@@ -39,6 +45,36 @@ const projectReducer = (state = initialState, action) => {
                     error: action.payload,
                     message: null,
                     projectId: null
+                }
+            };
+        case projectAction.GET_PROJECT_TREE_REQUEST:
+            return {
+                ...state,
+                projectTree: {
+                    loading: true,
+                    error: null,
+                    message: null,
+                    projectTree: null
+                }
+            };
+        case projectAction.GET_PROJECT_TREE_SUCCESS:
+            return {
+                ...state,
+                projectTree: {
+                    loading: false,
+                    error: null,
+                    message: null,
+                    projectTree: action.payload.data
+                }
+            };
+        case projectAction.GET_PROJECT_TREE_FAILURE:
+            return {
+                ...state,
+                projectTree: {
+                    loading: false,
+                    error: action.payload,
+                    message: null,
+                    projectTree: null
                 }
             };
         case projectAction.CLEAR_PROJECT_STATE:
