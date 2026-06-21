@@ -4,20 +4,21 @@ const initialState = {
     createProject: {
         loading: false,
         error: null,
-        message: null
+        message: null,
+        projectId: null
     }
 }
 
 const projectReducer = (state = initialState, action) => {
     switch (action.type) {
         case projectAction.CREATE_PROJECT_REQUEST:
-            console.log("action",action.payload)
             return {
                 ...state,
                 createProject: {
                     loading: true,
                     error: null,
-                    message: null
+                    message: null,
+                    projectId: null
                 }
             };
         case projectAction.CREATE_PROJECT_SUCCESS:
@@ -26,7 +27,8 @@ const projectReducer = (state = initialState, action) => {
                 createProject: {
                     loading: false,
                     error: null,
-                    message: null
+                    message: null,
+                    projectId: action.payload.data.projectId
                 }
             };
         case projectAction.CREATE_PROJECT_FAILURE:
@@ -35,7 +37,18 @@ const projectReducer = (state = initialState, action) => {
                 createProject: {
                     loading: false,
                     error: action.payload,
-                    message: null
+                    message: null,
+                    projectId: null
+                }
+            };
+        case projectAction.CLEAR_PROJECT_STATE:
+            return {
+                ...state,
+                createProject: {
+                    loading: false,
+                    error: null,
+                    message: null,
+                    projectId: null
                 }
             };
         default:

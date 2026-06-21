@@ -4,9 +4,12 @@ import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
+import { ActiveFileTabProvider } from './context/ActiveFileTabContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <App />
+    <ActiveFileTabProvider>
+      <App />
+    </ActiveFileTabProvider>
   </Provider>,
 )

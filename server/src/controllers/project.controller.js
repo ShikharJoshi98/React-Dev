@@ -14,6 +14,17 @@ const create = async (req, res, next) => {
     }
 }
 
+const fetchProjectTree = async (req, res, next) => {
+    try {
+        const projectId = req.params.projectId;
+        const tree = await projectService.getProjectTree(projectId);
+        successResponse(res, tree, "Successfully fetched tree", STATUS_CODE.OK);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
-    create
+    create,
+    fetchProjectTree
 }

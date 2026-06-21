@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { createProjectRequest } from "../features/project/projectAction";
+import { clearProjectState, createProjectRequest } from "../features/project/projectAction";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const dispatch = useDispatch();
-    const { loading, error, message } = useSelector(state => state.project.createProject);
+    const navigate = useNavigate();
+    const { loading, error, message, projectId } = useSelector(state => state.project.createProject);
     const [projectData, setProjectData] = useState({
         name: '',
         description: ''
@@ -17,12 +19,18 @@ function Home() {
             [name]: value
         }));
     }
-
     const handleCreateProject = (e) => {
         e.preventDefault();
-        console.log(projectData)
         dispatch(createProjectRequest(projectData));
     }
+
+    useEffect(() => {
+        if (projectId) {
+            navigate(`/project/${projectId}`)
+            dispatch(clearProjectState());
+        }
+    }, [projectId]);
+
     return (
         <main>
             <form onSubmit={handleCreateProject} className="flex flex-col gap-4 mt-10 w-fit">

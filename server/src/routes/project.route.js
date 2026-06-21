@@ -7,5 +7,9 @@ router.post("/create",
     projectController.create
 )
 
+router.get("/getProjectTree/:projectId", 
+    projectController.fetchProjectTree
+)
+
 module.exports = router;
 

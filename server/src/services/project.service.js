@@ -5,6 +5,8 @@ const Project = require("../models/Project");
 const AppError = require("../utils/error");
 const STATUS_CODE = require("../utils/statusCode");
 const config = require("../config/serverConfig");
+const path = require("path");
+const directoryTree = require("directory-tree");
 
 const execPromisified = util.promisify(child_process.exec);
 
@@ -26,7 +28,9 @@ const createProject = async (data) => {
             cwd: `./Projects/${project._id}`
         });
 
-        return project;
+        return {
+            projectId: project._id
+        };
     } catch (error) {
         if (error instanceof AppError) {
             throw error;
@@ -35,6 +39,13 @@ const createProject = async (data) => {
     }
 }
 
+const getProjectTree = async (projectId) => {
+    const projectPath = path.resolve(`./Projects/${projectId}`);
+    const tree = directoryTree(projectPath);
+    return tree;
+}
+
 module.exports = {
-    createProject
+    createProject,
+    getProjectTree
 }
