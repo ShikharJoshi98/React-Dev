@@ -15,14 +15,15 @@ function ProjectPlayground() {
     }, [dispatch, projectId])
 
     return (
-        <main>
-            {
-                projectId
-            }
-            <TreeNode
-                fileFolderData={projectTree}
-            />
-            <EditorComponent />
+        <main className="flex">
+            <div className="w-[25%] sticky top-0 h-screen bg-[#252a39] border-r border-white/60 text-white overflow-y-auto scrollbar-none">
+                <TreeNode
+                    fileFolderData={projectTree}
+                />
+            </div>
+            <div className="w-[75%] min-h-screen">
+                <EditorComponent />
+            </div>
         </main>
     )
 }
