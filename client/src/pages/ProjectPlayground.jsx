@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getProjectTreeRequest } from "../features/project/projectAction";
 import TreeNode from "../components/TreeNode";
+import { createEditorConnection } from "../features/editorSocket/editorAction";
+import { io } from "socket.io-client";
 
 function ProjectPlayground() {
     const { projectId } = useParams();
@@ -12,7 +14,22 @@ function ProjectPlayground() {
 
     useEffect(() => {
         dispatch(getProjectTreeRequest(projectId));
-    }, [dispatch, projectId])
+    }, [projectId])
+
+    useEffect(() => {
+        if (projectId) {
+            const editorSocketConn = io(`${import.meta.env.VITE_API_URL}/editor`, {
+                query: {
+                    projectId
+                }
+            });
+            dispatch(createEditorConnection(editorSocketConn));
+
+            return () => {
+                editorSocketConn.disconnect();
+            };
+        }
+    }, [projectId, dispatch]);
 
     return (
         <main className="flex">

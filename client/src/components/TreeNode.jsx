@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import EditorIcon from "./EditorIcon";
+import { useSelector } from "react-redux";
 
 function TreeNode({ fileFolderData }) {
     const [visibility, setVisibility] = useState({});
+    const { editorSocket } = useSelector(state => state.editor);
 
     function toggleVisibility(name) {
         setVisibility({
@@ -14,6 +16,11 @@ function TreeNode({ fileFolderData }) {
     function computeExtension(fileFolderData) {
         const names = fileFolderData.name.split(".");
         return names[names.length - 1];
+    }
+    function handleFileClick(fileFolderData) {
+        editorSocket.emit("readFile", {
+            pathToFileOrFolder: fileFolderData.path
+        })
     }
 
     return (
@@ -31,7 +38,9 @@ function TreeNode({ fileFolderData }) {
                     (
                         <div className="flex items-center pt-2.5">
                             <EditorIcon extension={computeExtension(fileFolderData)} />
-                            <p className="cursor-pointer ml-1">{fileFolderData.name}</p>
+                            <p
+                                onClick={() => handleFileClick(fileFolderData)}
+                                className="cursor-pointer ml-1">{fileFolderData.name}</p>
                         </div>
                     )
             }
