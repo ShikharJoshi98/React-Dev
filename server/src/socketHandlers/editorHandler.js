@@ -87,7 +87,7 @@ const handleEditorSocketEvents = (socket) => {
 
     socket.on("deleteFolder", async ({ pathToFileOrFolder }) => {
         try {
-            const response = await fs.rmdir(pathToFileOrFolder);
+            const response = await fs.rm(pathToFileOrFolder, { recursive: true, force: true });
 
             socket.emit("deleteFolderSuccess", {
                 data: "Folder deleted successfully"

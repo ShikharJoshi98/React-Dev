@@ -3,11 +3,13 @@ import { useEffect, useState } from "react"
 import EditorButton from "./EditorButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useActiveFileTab } from "../context/ActiveFileTabContext";
+import { extensionToFileType } from "../utils/extensionFileType";
 
 function EditorComponent() {
     const [editorState, setEditorState] = useState(null);
     const { editorSocket } = useSelector(state => state.editor);
     const { activeFileTab, setActiveFileTab } = useActiveFileTab();
+    let timerId = null;
 
     async function downloadTheme() {
         const response = await fetch('/Dracula.json');
@@ -18,14 +20,38 @@ function EditorComponent() {
         monaco.editor.defineTheme('dracula', editorState.theme);
         monaco.editor.setTheme('dracula');
     }
-
-    editorSocket?.on("readFileSuccess", (data) => {
-        setActiveFileTab(data.path, data.value);
-    });
+    function handleChange(value) {
+        if (timerId != null) {
+            clearTimeout(timerId);
+        }
+        timerId = setTimeout(() => {
+            const editorContent = value;
+            editorSocket.emit("writeFile", {
+                data: editorContent,
+                pathToFileOrFolder: activeFileTab.path
+            })
+        }, 2000);
+    }
 
     useEffect(() => {
         downloadTheme();
     }, []);
+
+    useEffect(() => {
+        if (!editorSocket) return;
+
+        const handleReadFileSuccess = (data) => {
+            const fileExtension = data.path.split('.').pop();
+            setActiveFileTab(data.path, data.value, fileExtension);
+        };
+
+        editorSocket.on("readFileSuccess", handleReadFileSuccess);
+
+        return () => {
+            editorSocket.off("readFileSuccess", handleReadFileSuccess);
+        };
+    }, [editorSocket, setActiveFileTab]);
+
     return (
         <>
             {
@@ -33,12 +59,14 @@ function EditorComponent() {
                 <Editor
                     height={'100vh'}
                     width={'100%'}
-                    defaultLanguage="javascript"
+                    defaultLanguage={undefined}
+                    language={extensionToFileType(activeFileTab?.extension)}
                     value={activeFileTab?.value ? activeFileTab.value : ""}
                     options={{
                         fontSize: 18,
                         fontFamily: 'monospace'
                     }}
+                    onChange={handleChange}
                     onMount={handleEditorTheme}
                 />
             }
